@@ -1,13 +1,8 @@
 import type { PredictionRequest, PredictionResponse } from '../types/prediction'
 
 /**
- * The backend base URL. Today this points at a local FastAPI server.
- * In production it will point at an API Gateway invoke URL, e.g.
- *   https://<api-id>.execute-api.eu-west-1.amazonaws.com/prod
- *
- * It is never hardcoded here — it's read from the environment so the
- * exact same build artifact can be pointed at different backends
- * (local, staging, production) without a code change.
+ * The backend base URL. Read from the environment so the same build
+ * artifact can be pointed at different backends without a code change.
  */
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -29,15 +24,9 @@ export class PredictionApiError extends Error {
 /**
  * Sends a feature array to the backend's /predict endpoint and returns
  * the predicted house price.
- *
- * This function knows nothing about SageMaker, Lambda, or any other
- * infrastructure detail — that's intentional. It only knows about the
- * public HTTP contract: POST /predict -> { prediction: number[] }.
  */
 export async function predictHousePrice(features: number[][]): Promise<number> {
   if (!API_BASE_URL) {
-    // Misconfiguration, not a runtime/network issue — fail loudly in
-    // dev so it's obvious the .env file is missing VITE_API_BASE_URL.
     console.error('VITE_API_BASE_URL is not set. Check your .env file.')
     throw new PredictionApiError(
       "We couldn't connect to the prediction service. Please try again.",
@@ -65,7 +54,6 @@ export async function predictHousePrice(features: number[][]): Promise<number> {
   }
 
   if (!response.ok) {
-    // Log the real status/body for debugging, but never surface it to the user.
     const bodyText = await safeReadText(response)
     console.error(`Prediction API returned ${response.status}:`, bodyText)
 

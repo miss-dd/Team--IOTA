@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/ErrorMessage.tsx","./src/components/FormField.tsx","./src/components/Header.tsx","./src/components/LoadingState.tsx","./src/components/PredictionCard.tsx","./src/components/PropertyForm.tsx","./src/services/predictionApi.ts","./src/types/prediction.ts","./src/utils/validation.ts"],"version":"5.9.3"}
